@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <title>Welcome</title>
+        <link rel="stylesheet" href="css/home.css">
+    </head>
+    <body>
+        <!--Navigation bar-->
+<div id="nav-placeholder">
+    Probably do it with React
+</div>
+<script>
+    $.get("nav.html", function(data){
+        $("#nav-placeholder").replaceWith(data);
+    });
+    </script>
+<!--end of Navigation bar-->
+        <header>
+            <h1> This is the about page</h1>
+        </header>
+        <about>
+            This is made by Khalil Samoud and Chase Duval
+        </about>
+        <main>
+        
+
+        </main>
+    </body>
+</html>

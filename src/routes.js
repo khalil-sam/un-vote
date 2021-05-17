@@ -4,17 +4,30 @@ const votes = require("./schema/votes");
 
 
 const express = require("express");
+const path = require("path");
 const resolutions = require("./schema/resolutions");
 const router = express.Router();
 const constants = require('./constants');
+const { read } = require("fs");
+const { readFile } = require("fs");
+
 
 
 router.route("/")
+    // .get((req, res) => {
+    //     console.log("GET /");
+    //     let reqPath = path.join(__dirname, '../public');
+    //     res.sendFile(reqPath + "/home.html");
+    // });
     .get((req, res) => {
         console.log("GET /");
-        res.status(200).send({
-            data: "App is running."
-        });
+        // readFile('../public/home.html','utf8',(err,html)=>
+        // {console.log(html);
+        //     res.send(html)
+        // })
+
+        res.status(200).send("this is the home page for now");
+        
     });
 
 
@@ -67,7 +80,7 @@ router.route("/r-votes/:id").get((req, res) => {
 
 router.route("/resolutions").get((req, res) => {
             console.log("GET /all-res");    
-            resolutions.find()
+            resolutions.find().limit(20)  // limit by 20, later add fetch with parameters that records the number of solutions 
                 .then(data => {
                     if (data){
                     res.status(200).send(data);
@@ -97,7 +110,7 @@ router.route("/resolutions/resid/:id").get((req, res) => {
 
 router.route("/votes/country/:id").get((req, res) => {
                 console.log("GET country votes");    
-                votes.find({Countryname : req.params.id})
+                votes.find({Countryname : req.params.id}).limit(20)
                     .then(data => {
                         if (data){
                         res.status(200).send(data);
