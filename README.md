@@ -37,3 +37,6 @@ Our database and server work perfectly.
 
 ## Important resources:
 https://www.un.org/styleguide/
+https://developers.google.com/chart/interactive/docs/gallery/geochart
+https://github.com/emrahonder/All-Countries-For-Google-GeoChart/blob/master/geochart-country-name.html
+https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/12379

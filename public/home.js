@@ -24,5 +24,6 @@ const showResolutions = () => {
 
 showResolutions();
 
+// <!-- PROBABLY ADD REACT LATER  -->
 
 //npm has to be running 

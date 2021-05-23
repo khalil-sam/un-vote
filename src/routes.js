@@ -8,28 +8,33 @@ const path = require("path");
 const resolutions = require("./schema/resolutions");
 const router = express.Router();
 const constants = require('./constants');
-const { read } = require("fs");
-const { readFile } = require("fs");
+
+
 
 
 
 router.route("/")
-    // .get((req, res) => {
-    //     console.log("GET /");
-    //     let reqPath = path.join(__dirname, '../public');
-    //     res.sendFile(reqPath + "/home.html");
-    // });
     .get((req, res) => {
         console.log("GET /");
+        let reqPath = path.join(__dirname, '../public');
+        res.sendFile(reqPath + "/countries.html");
+    });
+    // .get((req, res) => {
+    //     console.log("GET /");
         // readFile('../public/home.html','utf8',(err,html)=>
         // {console.log(html);
         //     res.send(html)
         // })
 
-        res.status(200).send("this is the home page for now");
+    //     res.status(200).send("this is the home page for now");
         
-    });
-
+    // });
+    // router.route("/c")
+    // .get((req, res) => {
+    //     console.log("GET /");
+    //     let reqPath = path.join(__dirname, '../public');
+    //     res.sendFile(reqPath + "/countries.html");
+    // });
 
 router.route("/votes")
     .get((req, res) => {

@@ -5,6 +5,7 @@ const env = "" + process.env.NODE_ENV;
 
 const express = require("express");
 const app = express();
+app.use(express.static(__dirname + '../public'));
 
 const bodyConfig = {
     limit: "10mb",
