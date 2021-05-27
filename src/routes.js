@@ -83,15 +83,73 @@ router.route("/r-votes/:id").get((req, res) => {
             })
         })
 
+/*const sortByDate = (arr, order) => {
+    if (order == "decr") {
+        return arr.sort((a, b) => {
+            return a.date < b.date;
+        })
+    }
+    else {
+        return arr.sort((a, b) => {
+            console.log("a date:"+a.date);
+            let result = a.date > b.date
+            console.log(result);
+            return result;
+        })
+    }
+}*/
+
+const sortByDate = (arr, order) => {
+    if (order == "decr") {
+        return arr.sort((a, b) => {
+            return a.date < b.date;
+        })
+    }
+    else {
+        return arr.sort((a, b) => {
+            //console.log("a date"+a.date);  
+            return a.date > b.date; 
+        })
+    }
+}
+
 router.route("/resolutions").get((req, res) => {
+            let size = req.body.pagesize;
+            if(!size) {
+                size = "20";
+            }
+            size = parseInt(size);
+
+            let page = req.body.pagenum;
+            if(!page) {
+                page = "1";
+            }
+            page = parseInt(page) - 1; // page 0 at the start
+
             console.log("GET /all-res");    
-            resolutions.find().limit(20)  // limit by 20, later add fetch with parameters that records the number of solutions 
+            resolutions.find()  // limit by 20, later add fetch with parameters that records the number of solutions 
                 .then(data => {
                     if (data){
-                    res.status(200).send(data);
-                return;}
+                        let result = sortByDate(data, "incr"); // NOT WORKING
+                        console.log("page size:"+(page*size) + "; page num:" + ((page*size) + size));
+                        result = result.slice(page*size, page*size + size);
+
+                        if(req.body.category) {
+                            result = result.filter(item => {
+                                console.log("item:"+item);
+                                console.log("category:"+req.body.category);
+                                let hasCat = (item[req.body.category] == "1");
+                                console.log("hasCat:"+hasCat);
+                                return hasCat;
+                            })
+                        }
+
+                        res.status(200).send(result);
+                        return;
+                    }
                 })
                 .catch(err => {
+                    console.log("ERROR!!!!:"+err);
                     res.status(404).send(err);
                 })
             })

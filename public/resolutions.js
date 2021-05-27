@@ -1,3 +1,39 @@
+"use strict";
+
+//require("dotenv").config();
+//const API_KEY = process.env.API_KEY;
+
+/*
+const API_KEY = "<IN DOT ENV>";
+
+const drawMap = () => {
+    google.charts.load('current', {
+        'packages':['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': API_KEY
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ['Country', 'Vote'],
+          ['Germany', 200],
+          ['United States', 300],
+          ['Brazil', 400],
+          ['Canada', 500],
+          ['France', 600],
+          ['RU', 700]
+        ]);
+
+        var options = {};
+
+        var chart = new google.visualization.GeoChart(document.querySelector('.map-detail'));
+
+        chart.draw(data, options);
+      }
+}*/
+
 const baseURL = 'http://localhost:8081';
 
 //console.log(__dirname)
@@ -39,6 +75,9 @@ const showResDetails = (res) => {
             area.innerHTML = 
             voteReadout(data);
         })
+
+        /*console.log("DRAWING MAP USING API CALL!!");
+        drawMap();*/
 }
 
 function openRes(resName) {
