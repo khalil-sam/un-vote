@@ -1,5 +1,7 @@
 const baseURL = 'http://localhost:8081';
 //console.log(__dirname)
+
+/*
 const showResolutions = () => {
     console.log("SHOWING Resolutions!");
     fetch(`${baseURL}/resolutions`)
@@ -22,7 +24,7 @@ const showResolutions = () => {
 }
 
 
-showResolutions();
+showResolutions();*/
 
 // <!-- PROBABLY ADD REACT LATER  -->
 
