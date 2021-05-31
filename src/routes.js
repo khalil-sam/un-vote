@@ -100,15 +100,20 @@ router.route("/r-votes/:id").get((req, res) => {
 }*/
 
 const sortByDate = (arr, order) => {
-    if (order == "decr") {
+    if (order == "incr") {
         return arr.sort((a, b) => {
-            return a.date < b.date;
+            if(b.date < a.date) {
+                return 1;
+            }
+            return -1;
         })
     }
-    else {
+    else { // decr
         return arr.sort((a, b) => {
-            //console.log("a date"+a.date);  
-            return a.date > b.date; 
+            if(b.date > a.date) {
+                return 1;
+            }
+            return -1;
         })
     }
 }
@@ -126,23 +131,41 @@ router.route("/resolutions").get((req, res) => {
             }
             page = parseInt(page) - 1; // page 0 at the start
 
+            let dateOrder = req.body.dateOrder;
+            if(!dateOrder) {
+                dateOrder = "incr";
+            }
+
             console.log("GET /all-res");    
             resolutions.find()  // limit by 20, later add fetch with parameters that records the number of solutions 
                 .then(data => {
                     if (data){
-                        let result = sortByDate(data, "incr"); // NOT WORKING
-                        console.log("page size:"+(page*size) + "; page num:" + ((page*size) + size));
-                        result = result.slice(page*size, page*size + size);
+                        let result = sortByDate(data, dateOrder); // NOT WORKING
+                        //console.log("Result sorted by date: "+result)
+                        //console.log("result is array: "+Array.isArray(result));
+
+                        // check sorted...
+                        /*
+                        for(let i=1; i<result.length; i++) {
+                            console.log(result[i].date);
+                            if (result[i].date < result[i-1].date) {
+                                console.log("bad!");
+                            }
+                        }*/
+                        console.log("result length:"+result.length);
 
                         if(req.body.category) {
                             result = result.filter(item => {
-                                console.log("item:"+item);
-                                console.log("category:"+req.body.category);
+                                //console.log("item:"+item);
+                                //console.log("category:"+req.body.category);
                                 let hasCat = (item[req.body.category] == "1");
-                                console.log("hasCat:"+hasCat);
+                                //console.log("hasCat:"+hasCat);
                                 return hasCat;
                             })
                         }
+
+                        console.log("page size:"+size + "; page num:" + page);
+                        result = result.slice(page*size, page*size + size);
 
                         res.status(200).send(result);
                         return;

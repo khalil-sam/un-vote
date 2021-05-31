@@ -7,7 +7,18 @@ Our database and server work perfectly.
 1. "/votes" : this returns all votes (We probably should remove this)
 2. "/year/:id" : you input a year and it returns all resolutions of that year
 3. "/r-votes/:id" : returns the the votes of a specific resolution
-4. "/resolutions" : returns all resolutions (By default, we limit the number of results to 20 for now). For this route, the request body can have three additional parameters: pagesize, pagenum, and category. pagesize specifies the number of resolutions to return; pagenum describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29 before the category filter is applied), and category specifies a single category from which to allow the results (out of the results returned from the page size/number).
+4. "/resolutions" : returns all resolutions (By default, we limit the number of results to 20 for now).
+
+For this route, the request body can have these additional parameters: 
+
+dateOrder: "incr" to sort resolutions in date-increasing order; anything else to sort in date-decreasing order. Defaults to "incr"
+
+category: specifies a single category from which to allow the results (out of the results returned from the page size/number). If not specified, all categories allowed.
+
+pagesize: specifies the number of resolutions to return, default 20
+
+pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29 before the category filter is applied), default 1
+
 5. "/resolutions/resid/:id" : returns the details of a resolution 
 6. "/votes/country/:id" : returns the votes of each country
 7. "/votes/country" : this just shows the list of the countries searchable for  "/votes/country/:id"
