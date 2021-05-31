@@ -15,6 +15,8 @@ dateOrder: "incr" to sort resolutions in date-increasing order; anything else to
 
 category: specifies a single category from which to allow the results (out of the results returned from the page size/number). If not specified, all categories allowed.
 
+year (number): Return results from one specific year. If omitted, allow all years.
+
 pagesize: specifies the number of resolutions to return, default 20
 
 pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29 before the category filter is applied), default 1

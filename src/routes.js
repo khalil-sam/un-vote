@@ -136,6 +136,8 @@ router.route("/resolutions").get((req, res) => {
                 dateOrder = "incr";
             }
 
+            let year = req.body.year;
+
             console.log("GET /all-res");    
             resolutions.find()  // limit by 20, later add fetch with parameters that records the number of solutions 
                 .then(data => {
@@ -161,6 +163,12 @@ router.route("/resolutions").get((req, res) => {
                                 let hasCat = (item[req.body.category] == "1");
                                 //console.log("hasCat:"+hasCat);
                                 return hasCat;
+                            })
+                        }
+
+                        if(year) {
+                            result = result.filter(item => {
+                                return (item.year == year);
                             })
                         }
 
