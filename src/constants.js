@@ -252,23 +252,68 @@ const google_countries =  [
     'Zimbabwe'	 //	ZW
 ]
    
-  arr1 = all_countries;
-  arr2 = google_countries;
+arr1 = all_countries;
+arr2 = google_countries;
 
-    let intersection = arr1.filter(x => arr2.includes(x));
-  let difference = arr1.filter(x => !arr2.includes(x));
-  let difference1 = arr2.filter(x => !arr1.includes(x));
-  let difference2 = arr1
-  .filter(x => !arr2.includes(x))
-  .concat(arr2.filter(x => !arr1.includes(x)));
+//let intersection = arr1.filter(x => arr2.includes(x));
+let unique_dataset = arr1.filter(x => !arr2.includes(x));
+let unique_google = arr2.filter(x => !arr1.includes(x));
+
+/*let difference2 = arr1
+.filter(x => !arr2.includes(x))
+.concat(arr2.filter(x => !arr1.includes(x)));*/
 
 
-  console.log('intersection:',intersection);
-  console.log('difference:',difference)
-  console.log('difference1:',difference1)
-  console.log('difference2:',difference2)
+//console.log('intersection:',intersection);
+console.log('unique_dataset',unique_dataset)
+console.log('unique_google:',unique_google)
 
 exports.all_countries = all_countries;
+
+const goneCountries =
+['German Democratic Republic', 
+'Czechoslovakia',
+'Yugoslavia',
+'Serbia and Montenegro',
+'Zanzibar',
+'Yemen Arab Republic',
+"Yemen People's Republic",
+];
+
+const countryChanges =
+[('Venezuela, Bolivarian Republic of','Venezuela (Bolivarian Republic of)'),
+('German Federal Republic','Germany'),
+('Czech Republic','Czechia'),
+('The former Yugoslav Republic of Macedonia','Macedonia (the former Yugoslav Republic of'),
+('Republic of Moldova','Moldova (Republic of)'),
+('Guinea Bissau','Guinea-Bissau'),
+('Gambia (Islamic Republic of the)','Gambia'),
+("Cote D'Ivoire","Côte d'Ivoire"),
+('Democratic Republic of the Congo','Congo (Democratic Republic of the)'),
+('United Republic of Tanzania','Tanzania, United Republic of'),
+('Taiwan, Province of China','Taiwan, Province of China a '),
+("Democratic People's Republic of Korea","Korea (Democratic People's Republic of)"),
+('Republic of Korea','Korea (Republic of)')];
+
+const convertNameToGoogle = (dataName) => {
+
+  if (goneCountries.includes(dataName)) {
+    return null;
+  }
+
+  let result = null;
+  countryChanges.forEach(pair => {
+    if (pair[0] == dataName) {
+      result = pair[1];
+      return;
+    }
+  });
+  if(result) {
+    return result;
+  }
+
+  return dataName;
+}
 
 // module.exports = mongoose.model("resolutions", resolutionsSchema);
 
