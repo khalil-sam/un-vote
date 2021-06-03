@@ -28,7 +28,7 @@ For this route, the request query string can have these additional parameters:
 
 dateOrder: "incr" to sort votes in date-increasing order; anything else to sort in date-decreasing order. Defaults to "incr"
 
-category [DOESNT WORK YET]: specifies a single category from which to allow the results (out of the results returned from the page size/number). If omitted, all categories allowed.
+category: specifies a single category from which to allow the results (out of the results returned from the page size/number). If omitted, all categories allowed.
 
 year (number): Return results from one specific year. If omitted, allow all years.
 
