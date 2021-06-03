@@ -9,20 +9,33 @@ Our database and server work perfectly.
 3. "/r-votes/:id" : returns the the votes of a specific resolution
 4. "/resolutions" : returns all resolutions (By default, we limit the number of results to 20 for now).
 
-For this route, the request body can have these additional parameters: 
+For this route, the request query string can have these additional parameters: 
 
 dateOrder: "incr" to sort resolutions in date-increasing order; anything else to sort in date-decreasing order. Defaults to "incr"
 
-category: specifies a single category from which to allow the results (out of the results returned from the page size/number). If not specified, all categories allowed.
+category: specifies a single category from which to allow the results (out of the results returned from the page size/number). If omitted, all categories allowed.
 
 year (number): Return results from one specific year. If omitted, allow all years.
 
 pagesize: specifies the number of resolutions to return, default 20
 
-pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29 before the category filter is applied), default 1
+pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29), default 1. Undefined behavior if too high.
 
 5. "/resolutions/resid/:id" : returns the details of a resolution 
-6. "/votes/country/:id" : returns the votes of each country
+6. "/votes/country/:id" : returns the votes of each country (by default, limit to 20 votes)
+
+For this route, the request query string can have these additional parameters:
+
+dateOrder: "incr" to sort votes in date-increasing order; anything else to sort in date-decreasing order. Defaults to "incr"
+
+category [DOESNT WORK YET]: specifies a single category from which to allow the results (out of the results returned from the page size/number). If omitted, all categories allowed.
+
+year (number): Return results from one specific year. If omitted, allow all years.
+
+pagesize: specifies the number of votes to return, default 20.
+
+pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29), default 1. Undefined behavior if too high.
+
 7. "/votes/country" : this just shows the list of the countries searchable for  "/votes/country/:id"
 
 ## Three main HTML pages:

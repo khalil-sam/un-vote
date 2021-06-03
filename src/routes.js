@@ -118,25 +118,39 @@ const sortByDate = (arr, order) => {
     }
 }
 
+const voteToRes = (vote) => {
+    resolutions.findOne({"rcid":vote.rcid})
+    .then(data => {
+        if(data) {
+            //console.log("voteToRes SUCCESS: converted vote " + JSON.stringify(vote) + " to " + JSON.stringify(data));
+            return data;
+        }
+        else {
+            //console.log("voteToRes: failed with vote " + JSON.stringify(vote) + "and result" + data);
+            return false;
+        }
+    })
+}
+
 router.route("/resolutions").get((req, res) => {
-            let size = req.body.pagesize;
+            let size = req.query.pagesize;
             if(!size) {
                 size = "20";
             }
             size = parseInt(size);
 
-            let page = req.body.pagenum;
+            let page = req.query.pagenum;
             if(!page) {
                 page = "1";
             }
             page = parseInt(page) - 1; // page 0 at the start
 
-            let dateOrder = req.body.dateOrder;
+            let dateOrder = req.query.dateOrder;
             if(!dateOrder) {
                 dateOrder = "incr";
             }
 
-            let year = req.body.year;
+            let year = req.query.year;
 
             console.log("GET /all-res");    
             resolutions.find()  // limit by 20, later add fetch with parameters that records the number of solutions 
@@ -156,11 +170,11 @@ router.route("/resolutions").get((req, res) => {
                         }*/
                         console.log("result length:"+result.length);
 
-                        if(req.body.category) {
+                        if(req.query.category) {
                             result = result.filter(item => {
                                 //console.log("item:"+item);
                                 //console.log("category:"+req.body.category);
-                                let hasCat = (item[req.body.category] == "1");
+                                let hasCat = (item[req.query.category] == "1");
                                 //console.log("hasCat:"+hasCat);
                                 return hasCat;
                             })
@@ -204,16 +218,62 @@ router.route("/resolutions/resid/:id").get((req, res) => {
 
 router.route("/votes/country/:id").get((req, res) => {
                 console.log("GET country votes");    
-                votes.find({Countryname : req.params.id}).limit(20)
+
+                console.log("query:" + JSON.stringify(req.query));
+
+                let size = req.query.pagesize;
+                if(!size) {
+                    size = "20";
+                }
+                size = parseInt(size);
+
+                let page = req.query.pagenum;
+                if(!page) {
+                    page = "1";
+                }
+                page = parseInt(page) - 1; // page 0 at the start
+
+                let dateOrder = req.query.dateOrder;
+                if(!dateOrder) {
+                    dateOrder = "incr";
+                }
+                
+                let year = req.query.year;
+
+                let findQuery = {Countryname : req.params.id, vote : {$ne: 9}};
+
+                if(year) {
+                    findQuery.year = year;
+                }
+
+                votes.find(findQuery)
                     .then(data => {
-                        if (data){
-                        res.status(200).send(data);
-                    return;}
-                    else{
-                        res.status(200).send("Please input a valid country")
-                    }
+                        console.log(data);
+                        if (data) {
+
+                            let result = sortByDate(data, dateOrder);
+
+                            if(req.query.category) {
+                                result = result.filter(item => {
+                                    let hasCat = (voteToRes(item)[req.query.category] == "1");
+                                    return hasCat;
+                                })
+                            }
+                            
+                            if(page*size > result.length) {
+                                console.log("page too high!");
+                            }
+
+                            result = result.slice(page*size, page*size + size);
+                            res.status(200).send(result);
+                            return;
+                        }
+                        else {
+                            res.status(200).send("Please input a valid country")
+                        }
                     })
                     .catch(err => {
+                        console.log(err);
                         res.status(404).send(err);
                     })
                 })
@@ -221,6 +281,7 @@ router.route("/votes/country/:id").get((req, res) => {
 router.route("/votes/country").get((req, res) => {
                 console.log("GET countries");
                 let a = constants   
-                res.status(200).send(a.all_countries); })
+                res.status(200).send(a.all_countries);
+            })
 
 module.exports = router;
