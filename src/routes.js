@@ -10,8 +10,10 @@ const router = express.Router();
 const constants = require('./constants');
 
 
-
-
+let emptyData = new Promise((resolve, reject) => {
+    console.log("in promise")
+    return [];
+})
 
 router.route("/")
     .get((req, res) => {
@@ -214,37 +216,92 @@ router.route("/resolutions/resid/:id").get((req, res) => {
                         res.status(404).send(err);
                     })
                 })
+
+const cvNext = (req, res) => {
+    return (data) => {
+        let size = req.query.pagesize;
+        if(!size) {
+            size = "20";
+        }
+        size = parseInt(size);
+
+        let page = req.query.pagenum;
+        if(!page) {
+            page = "1";
+        }
+        page = parseInt(page) - 1; // page 0 at the start
+
+        let dateOrder = req.query.dateOrder;
+        if(!dateOrder) {
+            dateOrder = "incr";
+        }
         
+        let year = req.query.year;
+
+        let voteQuery = {Countryname : req.params.id, vote : {$ne: 9}};
+
+        if(year) {
+            voteQuery.year = year;
+        }
+
+        console.log("found resolutions")
+        if(data) {
+            let rcidList = [];
+
+            data.forEach(item => {
+                rcidList.push(item.rcid);
+            })
+
+            //console.log("rcidList: "+rcidList);
+            
+            votes.find(voteQuery)
+            .then(data => {
+                console.log("found data")
+                if (data) {
+
+                    let result = sortByDate(data, dateOrder);
+
+                    if(req.query.category) {
+                        result = result.filter(item => {
+                            //console.log("item rcid: "+item.rcid);
+                            //console.log("item-r type:"+typeof(item.rcid)); //number
+                            //console.log("rcidList length: "+rcidList.length); // 6203
+                            let b = rcidList.includes(item.rcid.toString());
+                            //console.log("include: "+b);
+                            return b;
+                        });
+                    }
+
+                    //console.log("rcidList type:"+typeof(rcidList[0])); //string
+                    
+                    if(page*size > result.length) {
+                        console.log("page too high!");
+                    }
+
+                    result = result.slice(page*size, page*size + size);
+                    res.status(200).send(result);
+                    console.log("sent result");
+                    return;
+                }
+                else {
+                    res.status(200).send("Please input a valid country")
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(404).send(err);
+            })
+        }
+        else {
+            res.status(200).send("Bad res query")
+        }
+    }
+}
 
 router.route("/votes/country/:id").get((req, res) => {
                 console.log("GET country votes");    
 
                 console.log("query:" + JSON.stringify(req.query));
-
-                let size = req.query.pagesize;
-                if(!size) {
-                    size = "20";
-                }
-                size = parseInt(size);
-
-                let page = req.query.pagenum;
-                if(!page) {
-                    page = "1";
-                }
-                page = parseInt(page) - 1; // page 0 at the start
-
-                let dateOrder = req.query.dateOrder;
-                if(!dateOrder) {
-                    dateOrder = "incr";
-                }
-                
-                let year = req.query.year;
-
-                let voteQuery = {Countryname : req.params.id, vote : {$ne: 9}};
-
-                if(year) {
-                    voteQuery.year = year;
-                }
 
                 let resCatQuery = {}
                 if(req.query.category) {
@@ -252,54 +309,12 @@ router.route("/votes/country/:id").get((req, res) => {
                 }
                 console.log("RES CAT QUERY:" + JSON.stringify(resCatQuery));
 
-                resolutions.find(resCatQuery)
-                .then(data => {
-                    if(data) {
-                        let rcidList = [];
-                        data.forEach(item => {
-                            rcidList.push(item.rcid);
-                        })
-
-                        console.log("rcidList: "+rcidList);
-                        
-                        votes.find(voteQuery)
-                        .then(data => {
-                            if (data) {
-
-                                let result = sortByDate(data, dateOrder);
-
-                                result = result.filter(item => {
-                                    console.log("item rcid: "+item.rcid);
-                                    console.log("item-r type:"+typeof(item.rcid)); //number
-                                    //console.log("rcidList length: "+rcidList.length); // 6203
-                                    let b = rcidList.includes(item.rcid.toString());
-                                    console.log("include: "+b);
-                                    return b;
-                                });
-
-                                //console.log("rcidList type:"+typeof(rcidList[0])); //string
-                                
-                                if(page*size > result.length) {
-                                    console.log("page too high!");
-                                }
-
-                                result = result.slice(page*size, page*size + size);
-                                res.status(200).send(result);
-                                return;
-                            }
-                            else {
-                                res.status(200).send("Please input a valid country")
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            res.status(404).send(err);
-                        })
-                    }
-                    else {
-                        res.status(200).send("Bad res query")
-                    }
-                })    
+                if (req.query.category) {
+                    resolutions.find(resCatQuery).then(cvNext(req, res))
+                }
+                else {
+                    cvNext(req, res)([]);
+                }
 })
 
 router.route("/votes/country").get((req, res) => {
