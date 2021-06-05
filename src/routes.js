@@ -74,8 +74,9 @@ router.route("/r-votes/:id").get((req, res) => {
         votes.find({resid: req.params.id})
             .then(data => {
                 if (data){
-                res.status(200).send(data);
-            return;}
+                    res.status(200).send(data);
+                    return;
+                }
                 else{
                     res.status(200).send("Please input a valid resid")
                 }
@@ -83,23 +84,7 @@ router.route("/r-votes/:id").get((req, res) => {
             .catch(err => {
                 res.status(404).send(err);
             })
-        })
-
-/*const sortByDate = (arr, order) => {
-    if (order == "decr") {
-        return arr.sort((a, b) => {
-            return a.date < b.date;
-        })
-    }
-    else {
-        return arr.sort((a, b) => {
-            console.log("a date:"+a.date);
-            let result = a.date > b.date
-            console.log(result);
-            return result;
-        })
-    }
-}*/
+})
 
 const sortByDate = (arr, order) => {
     if (order == "incr") {
@@ -152,10 +137,15 @@ router.route("/resolutions").get((req, res) => {
                 dateOrder = "incr";
             }
 
+            let resQuery = {};
+
             let year = req.query.year;
+            if(year) {
+                resQuery.year = year;
+            }
 
             console.log("GET /all-res");    
-            resolutions.find()  // limit by 20, later add fetch with parameters that records the number of solutions 
+            resolutions.find(resQuery)  // limit by 20, later add fetch with parameters that records the number of solutions 
                 .then(data => {
                     if (data){
                         let result = sortByDate(data, dateOrder); // NOT WORKING
@@ -182,12 +172,6 @@ router.route("/resolutions").get((req, res) => {
                             })
                         }
 
-                        if(year) {
-                            result = result.filter(item => {
-                                return (item.year == year);
-                            })
-                        }
-
                         console.log("page size:"+size + "; page num:" + page);
                         result = result.slice(page*size, page*size + size);
 
@@ -206,16 +190,17 @@ router.route("/resolutions/resid/:id").get((req, res) => {
                 resolutions.find({resid : req.params.id})
                     .then(data => {
                         if (data){
-                        res.status(200).send(data);
-                    return;}
-                    else{
-                        res.status(200).send("Please input a valid resid")
-                    }
+                            res.status(200).send(data);
+                            return;
+                        }
+                        else{
+                            res.status(200).send("Please input a valid resid")
+                        }
                     })
                     .catch(err => {
                         res.status(404).send(err);
                     })
-                })
+})
 
 const cvNext = (req, res) => {
     return (data) => {
@@ -246,11 +231,13 @@ const cvNext = (req, res) => {
 
         console.log("found resolutions")
         if(data) {
-            let rcidList = [];
 
-            data.forEach(item => {
-                rcidList.push(item.rcid);
-            })
+            if(req.query.category) {
+                let rcidList = [];
+                data.forEach(item => {
+                    rcidList.push(item.rcid);
+                })
+            }
 
             //console.log("rcidList: "+rcidList);
             
@@ -260,6 +247,7 @@ const cvNext = (req, res) => {
                 if (data) {
 
                     let result = sortByDate(data, dateOrder);
+
 
                     if(req.query.category) {
                         result = result.filter(item => {
