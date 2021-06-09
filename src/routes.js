@@ -173,7 +173,9 @@ router.route("/resolutions").get((req, res) => {
                         }
 
                         console.log("page size:"+size + "; page num:" + page);
-                        result = result.slice(page*size, page*size + size);
+                        if(!req.query.nolimit) {
+                            result = result.slice(page*size, page*size + size);
+                        }
 
                         res.status(200).send(result);
                         return;
