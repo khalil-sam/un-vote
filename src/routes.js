@@ -266,7 +266,10 @@ const cvNext = (req, res) => {
                         console.log("page too high!");
                     }
 
-                    result = result.slice(page*size, page*size + size);
+                    if(!req.query.nolimit) {
+                        console.log("SERVER FILTERING PAGE!");
+                        result = result.slice(page*size, page*size + size);
+                    }
                     res.status(200).send(result);
                     console.log("sent result");
                     return;

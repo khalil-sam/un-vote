@@ -17,9 +17,11 @@ category: specifies a single category from which to allow the results (out of th
 
 year (number): Return results from one specific year. If omitted, allow all years.
 
-pagesize: specifies the number of resolutions to return, default 20
+pagesize: specifies the number of resolutions to return, default 20 unless nolimit is specified
 
 pagenum: describes which set of results to return (for example, pagesize 10 and pagenum 3 would return pages 20-29), default 1. Undefined behavior if too high.
+
+nolimit: If included as a parameter (with any non-zero value), allows unlimited page size.
 
 5. "/resolutions/resid/:id" : returns the details of a resolution 
 6. "/votes/country/:id" : returns the votes of each country (by default, limit to 20 votes)
