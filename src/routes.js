@@ -292,6 +292,10 @@ const cvNext = (req, res) => {
 }
 
 router.route("/votes/country/:id").get((req, res) => {
+
+                console.log("FULL PATH: "+req.path);
+                console.log("FULL QUERY: "+JSON.stringify(req.query));
+
                 console.log("GET country votes");    
 
                 console.log("query:" + JSON.stringify(req.query));
